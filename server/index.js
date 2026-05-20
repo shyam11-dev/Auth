@@ -1,8 +1,12 @@
 const express = require("express");
 const connectDB = require("./database");
 const app = express();
-app.use(express.json());
+const bookRoutes = require("./routes/book.routes");
 
+// Middleware
+app.use(express.json());
+// Routes
+app.use("/api/books", bookRoutes);
 // Connect to database
 connectDB();
 

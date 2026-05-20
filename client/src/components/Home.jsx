@@ -1,4 +1,19 @@
+import { useState } from "react";
+
 function Home() {
+  const [books, setBooks] = useState({
+    BookName: "",
+    BookTitle: "",
+    BookAuthor: "",
+    BookPrice: "",
+    publishedDate: "",
+  });
+
+  const handleChange = (e) => {
+    setBooks({ ...books, [e.target.name]: e.target.value });
+  };
+
+  console.log("books", books);
   return (
     <div className="w-full px-5 min-h-[calc(100vh-60px)]">
       <div className="w-full grid grid-cols-5 gap-4 my-4">
@@ -7,6 +22,9 @@ function Home() {
           <input
             type="text"
             placeholder="Book Name"
+            name="BookName"
+            value={books.BookName}
+            onChange={handleChange}
             className="w-ful border border-gray-500 rounded-sm h-8 px-2"
           />
         </div>
@@ -15,6 +33,9 @@ function Home() {
           <input
             type="text"
             placeholder="Book Title"
+            name="BookTitle"
+            value={books.BookTitle}
+            onChange={handleChange}
             className="w-ful border border-gray-500 rounded-sm h-8 px-2"
           />
         </div>
@@ -23,6 +44,9 @@ function Home() {
           <input
             type="text"
             placeholder="Book Author"
+            name="BookAuthor"
+            value={books.BookAuthor}
+            onChange={handleChange}
             className="w-ful border border-gray-500 rounded-sm h-8 px-2"
           />
         </div>
@@ -31,6 +55,9 @@ function Home() {
           <input
             type="text"
             placeholder="Selling price"
+            name="BookPrice"
+            value={books.BookPrice}
+            onChange={handleChange}
             className="w-ful border border-gray-500 rounded-sm h-8 px-2"
           />
         </div>
@@ -39,6 +66,9 @@ function Home() {
           <input
             type="date"
             placeholder="Publish Date"
+            name="publishedDate"
+            value={books.publishedDate}
+            onChange={handleChange}
             className="w-ful border border-gray-500 rounded-sm h-8 px-2"
           />
         </div>
