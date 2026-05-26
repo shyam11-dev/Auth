@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import bookBaseUrl from "../axiosInstance";
 function Home() {
   const [books, setBooks] = useState({
     BookName: "",
@@ -14,6 +14,16 @@ function Home() {
   };
 
   console.log("books", books);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await bookBaseUrl.post("/addBooks", books);
+      console.log("response", response);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
   return (
     <div className="w-full px-5 min-h-[calc(100vh-60px)]">
       <div className="w-full grid grid-cols-5 gap-4 my-4">
@@ -74,7 +84,10 @@ function Home() {
         </div>
       </div>
       <div className="w-full flex justify-end">
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-sm">
+        <button
+          onClick={handleSubmit}
+          className="bg-blue-500 text-white px-4 py-2 rounded-sm"
+        >
           Add Book
         </button>
       </div>
