@@ -40,7 +40,7 @@ function Home() {
         BookAuthor: "",
         BookPrice: "",
         publishedDate: "",
-      }); // Clear the form after submission
+      }); // Clear the form after submission time
     } catch (error) {
       console.log("error", error);
       alert("Failed to add book. Please try again.");
