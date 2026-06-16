@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { bookBaseUrl } from "../../axiosInstance";
+import { FaPen } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+
 function Home() {
   const [books, setBooks] = useState({
     BookName: "",
@@ -56,9 +59,22 @@ function Home() {
       console.log("error", error);
     }
   };
+  const handleDelete = async (_id) => {
+    try {
+      const response = await bookBaseUrl.post("/bookDelete", { _id });
+
+      console.log("response", response.data);
+      alert("Book deleted successfully!");
+      getBooks();
+    } catch (error) {
+      console.log("error", error.response?.data);
+      alert("Failed to delete book. Please try again.");
+    }
+  };
   useEffect(() => {
     getBooks();
   }, []);
+  const handleUpdate = async (_id) => {};
   return (
     <div className="w-full px-5 min-h-[calc(100vh-60px)]">
       <div className="w-full grid grid-cols-5 gap-4 my-4">
@@ -131,20 +147,23 @@ function Home() {
           <table className="w-full bg-white divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="tracing-wider px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="tracing-wider px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">
                   Book Name
                 </th>
-                <th className="tracing-wider px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="tracing-wider px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">
                   Book Title
                 </th>
-                <th className="tracing-wider px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="tracing-wider px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">
                   Author
                 </th>
-                <th className="tracing-wider px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="tracing-wider px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">
                   Selling Price
                 </th>
-                <th className="tracing-wider px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="tracing-wider px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">
                   Publish Date
+                </th>
+                <th className="tracing-wider px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase ">
+                  action
                 </th>
               </tr>
             </thead>
@@ -163,13 +182,28 @@ function Home() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     {book.BookPrice}
                   </td>
-                  {/* <td className="px-6 py-4 whitespace-nowrap">
-                    {book.publishedDate}
-                  </td> */}
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     {book.publishedDate
                       ? new Date(book.publishedDate).toLocaleDateString()
                       : "-"}
+                  </td>
+                  <td className="px-6 py-3 whitespace-nowrap">
+                    <div className="w-20 flex justify-center item-center gap-5">
+                      <div
+                        className="h-8 w-8 flex justify-center items-center bg-red-100 text-red-600 rounded text-lg cursor-pointer"
+                        onClick={() => handleDelete(book._id)}
+                      >
+                        <span>
+                          <MdDelete />
+                        </span>
+                      </div>
+                      <div className="h-8 w-8 flex justify-center items-center bg-green-100 text-green-600 rounded text-lg cursor-pointer">
+                        <span>
+                          <FaPen />
+                        </span>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               ))}

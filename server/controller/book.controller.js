@@ -47,6 +47,7 @@ const handleBookListController = async (req, res) => {
       return res.status(200).json({
         message: "Book list retrieved successfully",
         success: true,
+        count: bookList.length,
         bookList,
       });
     }
@@ -59,4 +60,89 @@ const handleBookListController = async (req, res) => {
   }
 };
 
-module.exports = { handleBookStoreController, handleBookListController };
+// const handleBookDeleteController = async (req, res) => {
+//   try {
+//     // const { id } = req.query; // Get the book ID from the query parameters
+//     const { _id } = req.body;
+//     const deletedBook = await Book.findByIdAndDelete(_id);
+
+//     if (!deletedBook) {
+//       return res
+//         .status(404)
+//         .json({ message: "Book not found", success: false });
+//     }
+
+//     return res
+//       .status(200)
+//       .json({ message: "Book deleted successfully", success: true });
+//   } catch (error) {
+//     return res
+//       .status(500)
+//       .json({ message: "Server error", success: false, error: error.message });
+//   }
+// };
+
+const handleBookDeleteController = async (req, res) => {
+  try {
+    console.log("BODY:", req.body);
+
+    const { _id } = req.body;
+
+    const deletedBook = await Book.findByIdAndDelete(_id);
+
+    console.log("DELETED:", deletedBook);
+
+    if (!deletedBook) {
+      return res.status(404).json({
+        message: "Book not found",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Book deleted successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      message: "Server error",
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+const handleBookUpdateController = async (req, res) => {
+  try {
+    const { _id, BookName, BookTitle, BookAuthor, BookPrice, publishedDate } =
+      req.body;
+    const updatedBook = await Book.findByIdAndUpdate(
+      _id,
+      { BookName, BookTitle, BookAuthor, BookPrice, publishedDate },
+      { new: true },
+    );
+    if (!updatedBook) {
+      return res
+        .status(404)
+        .json({ message: "Book not found", success: false });
+    }
+    return res.status(200).json({
+      message: "Book updated successfully",
+      success: true,
+      updatedBook,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Server error", success: false, error: error.message });
+  }
+};
+
+module.exports = {
+  handleBookStoreController,
+  handleBookListController,
+  handleBookDeleteController,
+  handleBookUpdateController,
+};
