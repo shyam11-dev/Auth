@@ -1,5 +1,5 @@
-import { useState } from "react";
-import bookBaseUrl from "../axiosInstance";
+import { useState, useEffect } from "react";
+import { bookBaseUrl } from "../../axiosInstance";
 function Home() {
   const [books, setBooks] = useState({
     BookName: "",
@@ -8,6 +8,7 @@ function Home() {
     BookPrice: "",
     publishedDate: "",
   });
+  const [bookList, setBookList] = useState([]);
 
   const handleChange = (e) => {
     setBooks({ ...books, [e.target.name]: e.target.value });
@@ -15,15 +16,49 @@ function Home() {
 
   console.log("books", books);
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await bookBaseUrl.post("/addBooks", books);
+  //     console.log("response", response);
+  //   } catch (error) {
+  //     console.log("error", error);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const response = await bookBaseUrl.post("/addBooks", books);
+
+      console.log("response", response);
+      alert("Book added successfully!");
+      getBooks(); // Refresh the book list after adding a new book
+      setBooks({
+        BookName: "",
+        BookTitle: "",
+        BookAuthor: "",
+        BookPrice: "",
+        publishedDate: "",
+      }); // Clear the form after submission
+    } catch (error) {
+      console.log("error", error);
+      alert("Failed to add book. Please try again.");
+    }
+  };
+  // get all books
+  const getBooks = async () => {
+    try {
+      const response = await bookBaseUrl.get("/bookList");
+      setBookList(response?.data?.bookList);
       console.log("response", response);
     } catch (error) {
       console.log("error", error);
     }
   };
+  useEffect(() => {
+    getBooks();
+  }, []);
   return (
     <div className="w-full px-5 min-h-[calc(100vh-60px)]">
       <div className="w-full grid grid-cols-5 gap-4 my-4">
@@ -114,13 +149,30 @@ function Home() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              <tr className="hover:bg-gray-200">
-                <td className="px-6 py-4 whitespace-nowrap">Book 1</td>
-                <td className="px-6 py-4 whitespace-nowrap">Title 1</td>
-                <td className="px-6 py-4 whitespace-nowrap">Author 1</td>
-                <td className="px-6 py-4 whitespace-nowrap">Price 1</td>
-                <td className="px-6 py-4 whitespace-nowrap">Date 1</td>
-              </tr>
+              {bookList.map((book) => (
+                <tr key={book._id} className="hover:bg-gray-200">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {book.BookName}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {book.BookTitle}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {book.BookAuthor}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {book.BookPrice}
+                  </td>
+                  {/* <td className="px-6 py-4 whitespace-nowrap">
+                    {book.publishedDate}
+                  </td> */}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {book.publishedDate
+                      ? new Date(book.publishedDate).toLocaleDateString()
+                      : "-"}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
